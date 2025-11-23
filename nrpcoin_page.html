@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NRPCoin Page</title>
+<style>
+  body { 
+    margin: 0; 
+    background: #111; 
+    display: flex; 
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    color: #fff;
+  }
+  canvas { 
+    border: 2px solid #444; 
+    background: #222; 
+  }
+  .buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .buttons a {
+    text-decoration: none;
+    padding: 10px 20px;
+    background: #FFD700;
+    color: #111;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: transform 0.2s;
+  }
+  .buttons a:hover {
+    transform: scale(1.1);
+  }
+</style>
+</head>
+<body>
+<canvas id="coinCanvas" width="400" height="400"></canvas>
+
+<div class="buttons">
+  <a href="https://x.com/YourUsername" target="_blank">X / Twitter</a>
+  <a href="https://t.me/YourTelegram" target="_blank">Telegram</a>
+  <a href="https://example.com/buy-nrpcoin" target="_blank">Buy Coin</a>
+</div>
+
+<script>
+const canvas = document.getElementById('coinCanvas');
+const ctx = canvas.getContext('2d');
+
+let angle = 0;
+let spinSpeed = 0.02;
+
+// Particle setup
+const particles = [];
+for (let i = 0; i < 50; i++) {
+    particles.push({
+        x: canvas.width/2,
+        y: canvas.height/2,
+        vx: (Math.random()-0.5)*2,
+        vy: (Math.random()-0.5)*2,
+        radius: Math.random()*2+1,
+        alpha: Math.random()
+    });
+}
+
+// Draw coin
+function drawCoin() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw coin
+    ctx.save();
+    ctx.translate(canvas.width/2, canvas.height/2);
+    ctx.rotate(angle);
+    ctx.beginPath();
+    ctx.arc(0, 0, 100, 0, Math.PI * 2);
+    ctx.fillStyle = 'gold';
+    ctx.fill();
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = '#FFD700';
+    ctx.stroke();
+
+    // Coin text
+    ctx.fillStyle = '#111';
+    ctx.font = 'bold 24px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('NRP', 0, 0);
+    ctx.restore();
+
+    // Draw particles
+    particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= 0.01;
+        if(p.alpha <= 0) {
+            p.x = canvas.width/2;
+            p.y = canvas.height/2;
+            p.vx = (Math.random()-0.5)*2;
+            p.vy = (Math.random()-0.5)*2;
+            p.alpha = 1;
+        }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(255, 215, 0, ${p.alpha})`;
+        ctx.fill();
+    });
+
+    angle += spinSpeed;
+    requestAnimationFrame(drawCoin);
+}
+
+// Increase spin speed on click
+canvas.addEventListener('click', () => {
+    spinSpeed += 0.05;
+    setTimeout(() => { spinSpeed = 0.02; }, 500);
+});
+
+drawCoin();
+</script>
+</body>
+</html>
